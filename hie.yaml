@@ -1,0 +1,8 @@
+cradle:
+  cabal:
+
+    - path: "./src"
+      component: "lib:marketplace"
+    
+    - path: "./app/marketplace-plutus.hs"
+      component: "exe:marketplace-plutus"
