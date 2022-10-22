@@ -3,8 +3,8 @@
 {-# LANGUAGE NumericUnderscores #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Market.Trace
-    ( test
+module Auction.Trace
+    ( --test
     ) where
 
 
@@ -19,10 +19,10 @@ import qualified Ledger.Ada       as Ada
 
 import           Prelude      (IO)
 import           Data.Default (def)
-
+{-
 import Utility         (wallet, wpkh)
-import Market.Offchain (endpoints)
-import Market.Types    (StartParams(..), NFTSale(..))
+import Auction.Offchain (endpoints)
+import Auction.Types    (StartParams(..), NFTSale(..))
 
 nftEx1 :: StartParams
 nftEx1 = StartParams
@@ -62,5 +62,4 @@ lendingTrace =
         void $ Emulator.waitNSlots 1
         callEndpoint @"buy" h4 nfts1
         void $ Emulator.waitNSlots 1
-
-    
+-} 

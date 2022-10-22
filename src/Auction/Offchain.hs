@@ -2,8 +2,8 @@
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE TypeApplications           #-}
 
-module Market.Offchain
-    ( endpoints
+module Auction.Offchain
+    ( --endpoints
     )
     where
 
@@ -28,13 +28,13 @@ import Playground.TH
 import Playground.Types
 import Plutus.Contract.Request (utxosTxOutTxAt)
 import qualified Ledger.Constraints as Constraint
-
-import           Market.Types               (NFTSale(..), SaleAction(..), SaleSchema, StartParams(..))
-import           Market.Onchain             as O2 ( Sale, typedBuyValidator, buyValidator, buyValidatorHash, scriptAddress )
-import           Utility                    (wallet, wpkh)
+{-
+import           Auction.Types               (NFTSale(..), SaleAction(..), SaleSchema, StartParams(..))
+import           Auction.Onchain             as O2 ( Sale, typedBuyValidator, buyValidator, buyValidatorHash, scriptAddress )
+import           Utility                    (wallet, wpkh)-}
 import qualified Plutus.V2.Ledger.Api as Plutus
 
-
+{-
 startSale :: StartParams -> Contract w SaleSchema Text ()
 startSale sp = do
     pkh <- Contract.ownFirstPaymentPubKeyHash
@@ -135,4 +135,4 @@ endpoints = forever
     start'          = endpoint @"start"          $ \nfts       -> startSale nfts
     buy1            = endpoint @"buy"            $ \nfts       -> buy nfts
     update1         = endpoint @"update"         $ \(nfts, i)       -> update (nfts, i)
-    close'          = endpoint @"close"          $ \nfts       -> close nfts
+    close'          = endpoint @"close"          $ \nfts       -> close nfts -}

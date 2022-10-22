@@ -2,7 +2,7 @@ cradle:
   cabal:
 
     - path: "./src"
-      component: "lib:marketplace"
+      component: "lib:auction"
     
-    - path: "./app/marketplace-plutus.hs"
-      component: "exe:marketplace-plutus"
+    - path: "./app/auction-plutus.hs"
+      component: "exe:auction-plutus"
