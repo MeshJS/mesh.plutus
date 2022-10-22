@@ -28,6 +28,9 @@ import           Ledger
     (Address,
      Validator,
      ValidatorHash,
+     POSIXTimeRange,
+     POSIXTime(..),
+     interval,
      contains,
      LowerBound(..),
      UpperBound(..),
@@ -88,6 +91,9 @@ mkAuctionValidator _ adat r ctx = case r of
     info :: TxInfo
     info = scriptContextTxInfo ctx
 
+    validInterval :: POSIXTimeRange
+    validInterval = interval (POSIXTime $ fst $ aInterval adat) (POSIXTime $ snd $ aInterval adat)
+
     checkNewBid :: Bool
     checkNewBid = let cos = [ co | co <- getContinuingOutputs ctx, uncurry (valueOf (txOutValue co)) (aToken adat) == 1 ] in
         case cos of
@@ -115,7 +121,7 @@ mkAuctionValidator _ adat r ctx = case r of
                          uncurry (valueOf (valuePaidTo info pkh)) (aToken adat) == 1
 
     checkTime :: Bool
-    checkTime = aInterval adat `contains` txInfoValidRange info
+    checkTime = validInterval `contains` txInfoValidRange info
 
     txBegin :: LowerBound POSIXTime -> Extended POSIXTime
     txBegin (LowerBound posx _) = posx 
@@ -124,7 +130,7 @@ mkAuctionValidator _ adat r ctx = case r of
     auctionEnd (UpperBound posx _) = posx 
 
     checkTimePast :: Bool
-    checkTimePast = auctionEnd (ivTo $ aInterval adat) < txBegin (ivFrom $ txInfoValidRange info)
+    checkTimePast = auctionEnd (ivTo validInterval) < txBegin (ivFrom $ txInfoValidRange info)
 
 
 data Auction

@@ -22,7 +22,7 @@ import qualified Prelude                   as Pr
 import           Schema                    (ToSchema)
 import qualified PlutusTx
 import           PlutusTx.Prelude          as Plutus ( Integer, Eq(..), (&&) )
-import           Plutus.V1.Ledger.Time     (POSIXTimeRange, POSIXTime)
+import           Plutus.V1.Ledger.Time     (POSIXTime)
 import           Ledger                    ( TokenName, CurrencySymbol, PubKeyHash )
 import           Plutus.Contract           ( Endpoint, type (.\/) )
 
@@ -31,7 +31,7 @@ data ADatum = ADatum
     { aOwner      :: PubKeyHash
     , aMinBid     :: Plutus.Integer
     , aHighBid    :: Maybe (PubKeyHash, Integer)
-    , aInterval   :: POSIXTimeRange
+    , aInterval   :: (Integer, Integer)
     , aToken      :: (CurrencySymbol, TokenName)
     } deriving (Generic, ToJSON, FromJSON)
 
