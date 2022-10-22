@@ -25,7 +25,7 @@ import           Cardano.Api.Shelley (PlutusScript (..), PlutusScriptV2)
 import qualified PlutusTx
 import           PlutusTx.Prelude as Plutus
 import           Ledger
-    (Address(Address),
+    (Address,
      Validator,
      ValidatorHash,
      contains,
@@ -34,13 +34,12 @@ import           Ledger
      Extended(..),
      ivFrom,
      ivTo,
-     PubKeyHash(..),
      unValidatorScript,
      scriptHashAddress,
      Script,
      Datum(..),
-     DatumHash(..), upperBound, POSIXTime (POSIXTime))
-import           Plutus.V1.Ledger.Credential (Credential(ScriptCredential))
+     DatumHash(..), 
+     POSIXTime)
 import           Ledger.Typed.Scripts (ValidatorTypes(..))
 import           Plutus.Script.Utils.V2.Typed.Scripts 
     (TypedValidator, 
@@ -53,11 +52,8 @@ import Plutus.V2.Ledger.Contexts
      TxInfo(..),
      TxOut(..),
      txSignedBy,
-     txInInfoResolved,
-     ownHash,
      findDatum,
      getContinuingOutputs,
-     txInfoSignatories,
      valuePaidTo)
 import           Plutus.V2.Ledger.Tx (OutputDatum(..))
 import           Ledger.Value (valueOf, adaSymbol, adaToken, singleton)
