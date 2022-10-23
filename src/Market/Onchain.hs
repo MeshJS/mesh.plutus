@@ -38,7 +38,7 @@ import           Plutus.V1.Ledger.Credential (Credential(ScriptCredential))
 import           Ledger.Typed.Scripts (ValidatorTypes(..))
 import           Plutus.Script.Utils.V2.Typed.Scripts 
     (TypedValidator, 
-     mkTypedValidatorParam, 
+     mkTypedValidator, 
      mkUntypedValidator, 
      validatorScript, 
      validatorHash)
@@ -60,8 +60,8 @@ import Market.Types    (NFTSale(..), SaleAction(..))
 
 
 {-# INLINABLE mkBuyValidator #-}
-mkBuyValidator :: () -> NFTSale -> SaleAction -> ScriptContext -> Bool
-mkBuyValidator _ nfts r ctx = case r of
+mkBuyValidator :: NFTSale -> SaleAction -> ScriptContext -> Bool
+mkBuyValidator nfts r ctx = case r of
     Buy     -> traceIfFalse "1" (valueOf (valuePaidTo info sig) (nCurrency nfts) (nToken nfts) == 1) &&
                traceIfFalse "2" (checkSellerOut (nSeller nfts) (nPrice nfts)) &&
                traceIfFalse "3" checkSingleBuy
@@ -89,27 +89,27 @@ instance ValidatorTypes Sale where
     type instance RedeemerType Sale = SaleAction
 
 
-typedBuyValidator :: () -> TypedValidator Sale
+typedBuyValidator :: TypedValidator Sale
 typedBuyValidator = go where
-    go = mkTypedValidatorParam @Sale
+    go = mkTypedValidator @Sale
          $$(PlutusTx.compile [|| mkBuyValidator ||])
          $$(PlutusTx.compile [|| wrap ||])
     wrap = mkUntypedValidator
 
-buyValidator :: () -> Validator
-buyValidator = validatorScript . typedBuyValidator
+buyValidator :: Validator
+buyValidator = validatorScript typedBuyValidator
 
-buyValidatorHash :: () -> ValidatorHash
-buyValidatorHash = validatorHash . typedBuyValidator
+buyValidatorHash :: ValidatorHash
+buyValidatorHash = validatorHash typedBuyValidator
 
-scriptAddress :: () -> Address
-scriptAddress = scriptHashAddress . buyValidatorHash
+scriptAddress :: Address
+scriptAddress = scriptHashAddress buyValidatorHash
 
-buyScript :: () -> Script
-buyScript = Ledger.unValidatorScript . buyValidator
+buyScript :: Script
+buyScript = Ledger.unValidatorScript buyValidator
 
-buyScriptAsShortBs :: () -> SBS.ShortByteString
-buyScriptAsShortBs = SBS.toShort . LB.toStrict . serialise . buyScript
+buyScriptAsShortBs :: SBS.ShortByteString
+buyScriptAsShortBs = SBS.toShort . LB.toStrict . serialise $ buyScript
 
-apiBuyScript :: () -> PlutusScript PlutusScriptV2
-apiBuyScript = PlutusScriptSerialised . buyScriptAsShortBs
+apiBuyScript :: PlutusScript PlutusScriptV2
+apiBuyScript = PlutusScriptSerialised buyScriptAsShortBs

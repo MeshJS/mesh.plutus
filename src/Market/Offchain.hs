@@ -30,7 +30,7 @@ import Plutus.Contract.Request (utxosTxOutTxAt)
 import qualified Ledger.Constraints as Constraint
 
 import           Market.Types               (NFTSale(..), SaleAction(..), SaleSchema, StartParams(..))
-import           Market.Onchain             as O2 ( Sale, typedBuyValidator, buyValidator, buyValidatorHash, scriptAddress )
+import           Market.Onchain             ( Sale, typedBuyValidator, buyValidator, buyValidatorHash, scriptAddress )
 import           Utility                    (wallet, wpkh)
 import qualified Plutus.V2.Ledger.Api as Plutus
 
@@ -42,9 +42,9 @@ startSale sp = do
     let val     = Value.singleton (sCs sp) (sTn sp) 1 Mnd.<> Value.singleton adaSymbol adaToken 2000000
         nfts    = NFTSale { nSeller = unPaymentPubKeyHash pkh, nToken = sTn sp, nCurrency = sCs sp, nPrice = sPrice sp}
         lookups = Constraints.unspentOutputs utxos Mnd.<>
-                  Constraints.typedValidatorLookups (O2.typedBuyValidator ())
+                  Constraints.typedValidatorLookups typedBuyValidator
         tx      = Constraints.mustPayToTheScript nfts val
-    ledgerTx <- submitTxConstraintsWith @O2.Sale lookups tx
+    ledgerTx <- submitTxConstraintsWith @Sale lookups tx
     void $ awaitTxConfirmed $ getCardanoTxId ledgerTx
     Contract.logInfo @String "startSale transaction confirmed"
 
@@ -59,7 +59,7 @@ buy nfts = do
             let r       = Redeemer $ PlutusTx.toBuiltinData Buy
                 val     = Value.singleton (nCurrency nfts) (nToken nfts) 1 Mnd.<> Value.singleton adaSymbol adaToken 2000000
                 valAdaS = Value.singleton adaSymbol adaToken (nPrice nfts) Mnd.<> Value.singleton adaSymbol adaToken 2000000
-            let lookups = Constraints.typedValidatorLookups (O2.typedBuyValidator ()) Mnd.<>
+            let lookups = Constraints.typedValidatorLookups typedBuyValidator Mnd.<>
                           Constraints.otherData (Datum (Plutus.toBuiltinData nfts)) Mnd.<>
                           Constraints.unspentOutputs (Map.singleton oref o)
                 tx      = Constraints.mustSpendScriptOutput oref r           Mnd.<>
@@ -81,7 +81,7 @@ update (nfts, newprice) = do
             let r       = Redeemer $ PlutusTx.toBuiltinData Close
                 val     = Value.singleton (nCurrency nfts) (nToken nfts) 1 Mnd.<> Value.singleton adaSymbol adaToken 2000000
                 nfts'   = nfts { nPrice = newprice }
-                lookups = Constraints.typedValidatorLookups (O2.typedBuyValidator ()) Mnd.<>
+                lookups = Constraints.typedValidatorLookups typedBuyValidator Mnd.<>
                           Constraints.otherData (Datum (Plutus.toBuiltinData nfts)) Mnd.<>
                           Constraints.unspentOutputs (Map.singleton oref o)
                 tx      = Constraints.mustSpendScriptOutput oref r Mnd.<>
@@ -101,7 +101,7 @@ close nfts = do
         Just (oref, o) -> do
             let r       = Redeemer $ PlutusTx.toBuiltinData Close
                 val     = Value.singleton (nCurrency nfts) (nToken nfts) 1 Mnd.<> Value.singleton adaSymbol adaToken 200000
-                lookups = Constraints.typedValidatorLookups (O2.typedBuyValidator ()) Mnd.<>
+                lookups = Constraints.typedValidatorLookups typedBuyValidator Mnd.<>
                           Constraints.otherData (Datum (Plutus.toBuiltinData nfts)) Mnd.<>
                           Constraints.unspentOutputs (Map.singleton oref o)
                 tx      = Constraints.mustSpendScriptOutput oref r       Mnd.<>
@@ -114,7 +114,7 @@ close nfts = do
 
 findSale :: (AsContractError e, ToJSON e) => (CurrencySymbol, TokenName) -> Contract w SaleSchema e (Maybe (TxOutRef, ChainIndexTxOut))
 findSale (cs, tn) = do
-    utxos <- Map.filter f <$> utxosTxOutTxAt (O2.scriptAddress ())
+    utxos <- Map.filter f <$> utxosTxOutTxAt scriptAddress
     return $ case Map.toList utxos of
         [(oref, (o, _))] -> Just (oref, o)
         _           -> Nothing
