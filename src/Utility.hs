@@ -4,8 +4,8 @@ module Utility
     ( wallet
     , wpkh) where
 
-import Wallet.Emulator.Wallet (Wallet, knownWallet, mockWalletPaymentPubKeyHash, SigningProcess, signPrivateKeys)
-import Ledger (PubKeyHash, unPaymentPubKeyHash, CurrencySymbol, TokenName)
+import Wallet.Emulator.Wallet (Wallet, knownWallet, mockWalletPaymentPubKeyHash)
+import Ledger (PubKeyHash, unPaymentPubKeyHash)
 
 
 wallet :: Integer -> Wallet

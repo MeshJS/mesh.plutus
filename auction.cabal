@@ -1,5 +1,5 @@
 Cabal-Version:      2.4
-Name:               auction
+Name:               alwaystrue
 Version:            0.1.0.0
 Build-Type:         Simple
 
@@ -27,10 +27,7 @@ common project-config
                         -Wunused-packages
 
 library
-  exposed-modules:     Auction.Types
-                     , Auction.Onchain
-                     , Auction.Offchain
-                     , Auction.Trace
+  exposed-modules:     AlwaysTrue.Onchain
                      , Utility
   build-depends:       aeson
                      , base ^>=4.14.1.0
@@ -62,14 +59,14 @@ library
   default-language:    Haskell2010
   ghc-options:         -Wall -fobject-code -fno-ignore-interface-pragmas -fno-omit-interface-pragmas -fno-strictness -fno-spec-constr -fno-specialise
 
-executable auction-plutus
+executable compile-plutus
   import:               base, project-config
   hs-source-dirs:       app
-  main-is:              auction-plutus.hs
+  main-is:              compile-plutus.hs
   ghc-options:          -threaded -rtsopts "-with-rtsopts=-T"
 
   build-depends:        cardano-api
-                      , auction
+                      , alwaystrue
                       , plutus-ledger-api
                       , bytestring
                       , cardano-ledger-alonzo
