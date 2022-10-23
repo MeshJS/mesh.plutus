@@ -1,4 +1,4 @@
-# Always Treu Contract
+# Always True Contract
 
 ### How to use it with Mesh
 #### Redeemer and Datum
