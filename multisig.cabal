@@ -1,5 +1,5 @@
 Cabal-Version:      2.4
-Name:               alwaystrue
+Name:               multisig
 Version:            0.1.0.0
 Build-Type:         Simple
 
@@ -27,7 +27,8 @@ common project-config
                         -Wunused-packages
 
 library
-  exposed-modules:     AlwaysTrue.Onchain
+  exposed-modules:     MultiSig.Onchain
+                     , MultiSig.Types
                      , Utility
   build-depends:       aeson
                      , base ^>=4.14.1.0
@@ -66,7 +67,7 @@ executable compile-plutus
   ghc-options:          -threaded -rtsopts "-with-rtsopts=-T"
 
   build-depends:        cardano-api
-                      , alwaystrue
+                      , multisig
                       , plutus-ledger-api
                       , bytestring
                       , cardano-ledger-alonzo

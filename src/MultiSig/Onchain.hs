@@ -5,8 +5,9 @@
 {-# LANGUAGE TypeApplications           #-}
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE DerivingStrategies         #-}
+{-# LANGUAGE NamedFieldPuns             #-}
 
-module AlwaysTrue.Onchain
+module MultiSig.Onchain
     ( apiScript
     , scriptAsShortBs
     ) where
@@ -25,16 +26,17 @@ import           Ledger
 import           Ledger.Typed.Scripts (ValidatorTypes(..))
 import           Plutus.Script.Utils.V2.Typed.Scripts 
     (TypedValidator, 
-     mkTypedValidator, 
+     mkTypedValidatorParam, 
      mkUntypedValidator, 
      validatorScript)
 import Plutus.V2.Ledger.Contexts 
-    (ScriptContext(..))
+    (ScriptContext(..), txInfoSignatories)
 
+import MultiSig.Types (MultiSigParams(..))
 
 {-# INLINABLE mkValidator #-}
-mkValidator :: () -> () -> ScriptContext -> Bool
-mkValidator _ _ _ = True
+mkValidator :: MultiSigParams -> () -> () -> ScriptContext -> Bool
+mkValidator MultiSigParams{signatories, minSigs} _ _ ctx = length [ sig | sig <- txInfoSignatories (scriptContextTxInfo ctx), sig `elem` signatories ] >= minSigs
 
 
 data Always
@@ -43,21 +45,21 @@ instance ValidatorTypes Always where
     type instance RedeemerType Always = ()
 
 
-typedValidator :: TypedValidator Always
+typedValidator :: MultiSigParams -> TypedValidator Always
 typedValidator = go where
-    go = mkTypedValidator @Always 
+    go = mkTypedValidatorParam @Always 
          $$(PlutusTx.compile [|| mkValidator ||])
          $$(PlutusTx.compile [|| wrap ||])
     wrap = mkUntypedValidator
 
-validator :: Validator
-validator = validatorScript typedValidator
+validator :: MultiSigParams -> Validator
+validator = validatorScript . typedValidator
 
-script :: Script
-script = Ledger.unValidatorScript validator
+script :: MultiSigParams -> Script
+script = Ledger.unValidatorScript . validator
 
-scriptAsShortBs :: SBS.ShortByteString
-scriptAsShortBs = SBS.toShort . LB.toStrict . serialise $ script
+scriptAsShortBs :: MultiSigParams -> SBS.ShortByteString
+scriptAsShortBs = SBS.toShort . LB.toStrict . serialise . script
 
-apiScript :: PlutusScript PlutusScriptV2
-apiScript = PlutusScriptSerialised scriptAsShortBs
+apiScript :: MultiSigParams -> PlutusScript PlutusScriptV2
+apiScript = PlutusScriptSerialised . scriptAsShortBs

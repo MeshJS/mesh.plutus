@@ -16,19 +16,23 @@ import Control.Exception
 import System.Environment ( getArgs )
 import qualified Data.ByteString.Short as SBS
 
-import AlwaysTrue.Onchain (apiScript, scriptAsShortBs)
+import MultiSig.Onchain (apiScript, scriptAsShortBs)
+import MultiSig.Types (MultiSigParams(..))
 
 vasilPV :: Plutus.ProtocolVersion
 vasilPV = Plutus.ProtocolVersion 7 0
+
+mp :: MultiSigParams
+mp = MultiSigParams ["", "", ""] 2
 
 main :: IO ()
 main = do
     args <- getArgs
     let nargs = length args
     let scriptnum = if nargs > 0 then read (head args) else 42
-    let scriptname = if nargs > 1 then args!!1 else  "alwaystrue.plutus"
+    let scriptname = if nargs > 1 then args!!1 else  "multisig.plutus"
     putStrLn $ "Writing output to: " ++ scriptname
-    writePlutusScript scriptnum scriptname apiScript scriptAsShortBs
+    writePlutusScript scriptnum scriptname (apiScript mp) (scriptAsShortBs mp)
 
 
 writePlutusScript :: Integer -> FilePath -> PlutusScript PlutusScriptV2 -> SBS.ShortByteString -> IO ()
