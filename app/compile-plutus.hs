@@ -16,7 +16,7 @@ import Control.Exception
 import System.Environment ( getArgs )
 import qualified Data.ByteString.Short as SBS
 
-import AlwaysTrue.Onchain (apiScript, scriptAsShortBs)
+import Vesting.Onchain (apiScript, scriptAsShortBs)
 
 vasilPV :: Plutus.ProtocolVersion
 vasilPV = Plutus.ProtocolVersion 7 0
@@ -26,7 +26,7 @@ main = do
     args <- getArgs
     let nargs = length args
     let scriptnum = if nargs > 0 then read (head args) else 42
-    let scriptname = if nargs > 1 then args!!1 else  "alwaystrue.plutus"
+    let scriptname = if nargs > 1 then args!!1 else  "vesting.plutus"
     putStrLn $ "Writing output to: " ++ scriptname
     writePlutusScript scriptnum scriptname apiScript scriptAsShortBs
 

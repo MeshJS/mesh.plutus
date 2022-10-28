@@ -6,7 +6,7 @@
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE DerivingStrategies         #-}
 
-module AlwaysTrue.Onchain
+module Vesting.Onchain
     ( apiScript
     , scriptAsShortBs
     ) where
@@ -21,7 +21,8 @@ import           PlutusTx.Prelude as Plutus
 import           Ledger
     (Validator,
      unValidatorScript,
-     Script)
+     Script,
+     PubKeyHash)
 import           Ledger.Typed.Scripts (ValidatorTypes(..))
 import           Plutus.Script.Utils.V2.Typed.Scripts 
     (TypedValidator, 
@@ -29,17 +30,18 @@ import           Plutus.Script.Utils.V2.Typed.Scripts
      mkUntypedValidator, 
      validatorScript)
 import Plutus.V2.Ledger.Contexts 
-    (ScriptContext(..))
+    (ScriptContext(..),
+    txSignedBy)
 
 
 {-# INLINABLE mkValidator #-}
-mkValidator :: () -> () -> ScriptContext -> Bool
-mkValidator _ _ _ = True
+mkValidator :: PubKeyHash -> () -> ScriptContext -> Bool
+mkValidator pkh _ ctx = txSignedBy (scriptContextTxInfo ctx) pkh
 
 
 data Always
 instance ValidatorTypes Always where
-    type instance DatumType Always    = ()
+    type instance DatumType Always    = PubKeyHash
     type instance RedeemerType Always = ()
 
 
