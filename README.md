@@ -5,6 +5,9 @@ The vesting contract is a simple contract that verifies that the address passed 
 ### How to use it with Mesh
 
 #### Datum
+```javascript
+const datum: Data = '<pubkeyhash here>'
+```
 
 #### Redeemer
 Can put anything, as it does not enter in the validation process
