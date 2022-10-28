@@ -1,5 +1,7 @@
 # NFT Marketplace Contract
 
+General NFT Marketplace contract. A seller locks an NFT with a certain price and anyone can buy it by sending the demanded price to the seller.
+
 ### How to use it with Mesh
 
 #### Redeemers
