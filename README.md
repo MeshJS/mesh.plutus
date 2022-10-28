@@ -12,7 +12,7 @@
 ```javascript
 const datumConstr: Data = {
       alternative: 0,
-      fields: ['seller address', price, 'policy id of token for sale', 'token name of token for sale']
+      fields: ['seller address as pubkeyhash', price, 'policy id of token for sale', 'token name of token for sale in hex']
 };
 ```
 
