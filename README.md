@@ -17,4 +17,4 @@ const datumConstr: Data = {
 ```
 
 #### Compiled Script
-https://github.com/MartifyLabs/mesh.plutus/blob/marketplace-v1/marketplace.plutus
+https://github.com/MartifyLabs/mesh.plutus/blob/marketplace/marketplace.plutus
