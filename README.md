@@ -50,7 +50,7 @@ async function unlockNFT() {
                'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada', 
                '4d657368546f6b656e']
     };
-    const redeemer: Data = { alternative: 0, fields: [] };
+    const redeemer: Data = { alternative: 1, fields: [] };
     if (wallet) {
       setLoading(true);
       const assetUtxo = await _getAssetUtxo({
