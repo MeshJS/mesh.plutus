@@ -76,7 +76,7 @@ async function cancelSale() {
 };
 ```
 
-#### (WIP) Update sale price (only available for the seller)
+#### Update sale price (only available for the seller)
 Here we are changing the price of the sale from 10ADA to 15ADA
 ```javascript
 async function unlockNFT() {
