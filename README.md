@@ -76,6 +76,52 @@ async function cancelSale() {
 };
 ```
 
+#### (WIP) Update sale price (only available for the seller)
+Here we are changing the price of the sale from 10ADA to 15ADA
+```javascript
+async function cancelSale() {
+    const addr = (await wallet.getUsedAddresses())[0]; //addr_test1qq8p3dqp9aym3jkw8elts4d97ml3exlrvhsahqdjqpntefc3df6lf6qvny8zsz09gct8d037f7urhqm2fu7yxwzl4n5scqaqh0
+    const datumConstr: Data = {
+      alternative: 0,
+      fields: [resolvePaymentKeyHash(addr), 
+               10000000, 
+               'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada', 
+               '4d657368546f6b656e']
+    };
+    const datumConstrNew: Data = {
+      alternative: 0,
+      fields: [resolvePaymentKeyHash(addr), 
+               15000000, 
+               'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada', 
+               '4d657368546f6b656e']
+    };
+    const redeemer: Data = { alternative: 1, fields: [] };
+    if (wallet) {
+      setLoading(true);
+      const assetUtxo = await _getAssetUtxo({
+        scriptAddress: scriptAddr, 
+        asset: 'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada4d657368546f6b656e',
+        datum: datumConstr,
+      });
+      const tx = new Transaction({ initiator: wallet })
+        .redeemValue({
+          value: assetUtxo,
+          script: script,
+          datum: datumConstr,
+          redeemer: redeemer,
+        })
+        .sendValue({ address: addr }, assetUtxo)
+        .setRequiredSigners([addr]);
+      
+      const unsignedTx = await tx.build();
+      const signedTx = await wallet.signTx(unsignedTx, true);
+      const txHash = await wallet.submitTx(signedTx);
+      setLoading(false);
+    }
+};
+```
+
+
 #### Buy NFT
 ```javascript
 async function buyNFT() {
