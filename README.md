@@ -50,7 +50,7 @@ async function cancelSale() {
                'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada', 
                '4d657368546f6b656e']
     };
-    const redeemer: Data = { alternative: 1, fields: [] };
+    const redeemer = { data: { alternative: 1, fields: [] }};
     if (wallet) {
       setLoading(true);
       const assetUtxo = await _getAssetUtxo({
@@ -79,30 +79,25 @@ async function cancelSale() {
 #### (WIP) Update sale price (only available for the seller)
 Here we are changing the price of the sale from 10ADA to 15ADA
 ```javascript
-async function cancelSale() {
-    const addr = (await wallet.getUsedAddresses())[0]; //addr_test1qq8p3dqp9aym3jkw8elts4d97ml3exlrvhsahqdjqpntefc3df6lf6qvny8zsz09gct8d037f7urhqm2fu7yxwzl4n5scqaqh0
+async function unlockNFT() {
+    const addr = (await wallet.getUsedAddresses())[0];
     const datumConstr: Data = {
       alternative: 0,
-      fields: [resolvePaymentKeyHash(addr), 
-               10000000, 
-               'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada', 
-               '4d657368546f6b656e']
+      fields: [resolvePaymentKeyHash(addr), 10000000, 'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada', '4d657368546f6b656e']
     };
     const datumConstrNew: Data = {
       alternative: 0,
-      fields: [resolvePaymentKeyHash(addr), 
-               15000000, 
-               'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada', 
-               '4d657368546f6b656e']
+      fields: [resolvePaymentKeyHash(addr), 15000000, 'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada', '4d657368546f6b656e']
     };
-    const redeemer: Data = { alternative: 1, fields: [] };
     if (wallet) {
       setLoading(true);
+      const redeemer = { data: { alternative: 1, fields: [] }};
       const assetUtxo = await _getAssetUtxo({
         scriptAddress: scriptAddr, 
         asset: 'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada4d657368546f6b656e',
         datum: datumConstr,
       });
+      
       const tx = new Transaction({ initiator: wallet })
         .redeemValue({
           value: assetUtxo,
@@ -110,15 +105,28 @@ async function cancelSale() {
           datum: datumConstr,
           redeemer: redeemer,
         })
-        .sendValue({ address: addr }, assetUtxo)
-        .setRequiredSigners([addr]);
+        .setRequiredSigners([addr])
+        .sendAssets(
+          {
+            address: scriptAddr,
+            datum: {
+              value: datumConstrNew,
+            },
+          },
+          [
+            {
+              unit: "aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada4d657368546f6b656e",
+              quantity: "1",
+            },
+          ],
+        );
       
       const unsignedTx = await tx.build();
       const signedTx = await wallet.signTx(unsignedTx, true);
       const txHash = await wallet.submitTx(signedTx);
       setLoading(false);
     }
-};
+}; 
 ```
 
 
@@ -134,7 +142,7 @@ async function buyNFT() {
                'aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada', 
                '4d657368546f6b656e']
     };
-    const redeemer: Data = { alternative: 0, fields: [] };
+    const redeemer = { data: { alternative: 0, fields: [] }};
     if (wallet) {
       setLoading(true);
       const assetUtxo = await _getAssetUtxo({
@@ -164,8 +172,8 @@ async function buyNFT() {
 #### Redeemers
 | Haskell | Mesh                                                  |
 |---------|-------------------------------------------------------|
-| Buy     | `const redeemer: Data = { alternative: 0, fields: [] }` |
-| Close   | `const redeemer: Data = { alternative: 1, fields: [] }` |
+| Buy     | `const redeemer = { data: { alternative: 0, fields: [] }};` |
+| Close   | `const redeemer = { data: { alternative: 1, fields: [] }};` |
 
 #### Datum
 ```javascript
