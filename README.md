@@ -6,7 +6,7 @@ General NFT Marketplace contract. A seller locks an NFT with a certain price and
 
 In this example we will be selling a token of policy id: `aab618d0373d5239b49695cc613cf1b741e28aadb472f00385138ada` and token name: `MeshToken` which in hex is `4d657368546f6b656e`. We will sell it at a price of `10ADA (10000000 lovelace)` and the seller will be `addr_test1qq8p3dqp9aym3jkw8elts4d97ml3exlrvhsahqdjqpntefc3df6lf6qvny8zsz09gct8d037f7urhqm2fu7yxwzl4n5scqaqh0`
 
-**Note** that the following functions are to be used while following the [Mesh guide](https://mesh.martify.io/guies/smart-contract) on how to use your Smart Contract with Mesh. Here we just list all the endpoint functions for this particular Smart Contract.
+**Note** that the following functions are to be used while following the [Mesh guide](https://mesh.martify.io/guides/smart-contract) on how to use your Smart Contract with Mesh. Here we just list all the endpoint functions for this particular Smart Contract.
 
 #### Put NFT for sale
 
