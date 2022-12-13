@@ -112,7 +112,7 @@ close nfts = do
             Contract.logInfo @String "close transaction confirmed"
 
 
-findSale :: (AsContractError e, ToJSON e) => (CurrencySymbol, TokenName) -> Contract w SaleSchema e (Maybe (TxOutRef, ChainIndexTxOut))
+findSale :: (AsContractError e, ToJSON e) => (CurrencySymbol, TokenName) -> Contract w SaleSchema e (Maybe (TxOutRef, DecoratedTxOut))
 findSale (cs, tn) = do
     utxos <- Map.filter f <$> utxosTxOutTxAt scriptAddress
     return $ case Map.toList utxos of
@@ -120,7 +120,7 @@ findSale (cs, tn) = do
         _           -> Nothing
 
   where
-    f :: (ChainIndexTxOut, Plutus.ChainIndex.Tx.ChainIndexTx) -> Bool
+    f :: (DecoratedTxOut, Plutus.ChainIndex.Tx.ChainIndexTx) -> Bool
     f (o, _) = valueOf (V2.Tx.txOutValue $ toTxInfoTxOut o) cs tn == 1
 
 
