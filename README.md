@@ -4,7 +4,7 @@ Simplest contract out there, always returns `True`. Note that before the validat
 
 ### How to use it with Mesh
 
-A detailed guide on how to use this contract is available [here](https://mesh.martify.io/guides/smartcontract).
+A detailed guide on how to use this contract is available [here](https://meshjs.dev/guides/smartcontract).
 
 #### Compiled Script
 https://github.com/MartifyLabs/mesh.plutus/blob/always-true/alwaystrue.plutus
