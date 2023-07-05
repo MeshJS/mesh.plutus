@@ -39,15 +39,15 @@ mkValidator :: MultiSigParams -> () -> () -> ScriptContext -> Bool
 mkValidator MultiSigParams{signatories, minSigs} _ _ ctx = length [ sig | sig <- txInfoSignatories (scriptContextTxInfo ctx), sig `elem` signatories ] >= minSigs
 
 
-data Always
-instance ValidatorTypes Always where
-    type instance DatumType Always    = ()
-    type instance RedeemerType Always = ()
+data MultiSigData
+instance ValidatorTypes MultiSigData where
+    type instance DatumType MultiSigData    = ()
+    type instance RedeemerType MultiSigData = ()
 
 
-typedValidator :: MultiSigParams -> TypedValidator Always
+typedValidator :: MultiSigParams -> TypedValidator MultiSigData
 typedValidator = go where
-    go = mkTypedValidatorParam @Always 
+    go = mkTypedValidatorParam @MultiSigData 
          $$(PlutusTx.compile [|| mkValidator ||])
          $$(PlutusTx.compile [|| wrap ||])
     wrap = mkUntypedValidator
