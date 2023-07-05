@@ -39,15 +39,15 @@ mkValidator :: PubKeyHash -> () -> ScriptContext -> Bool
 mkValidator pkh _ ctx = txSignedBy (scriptContextTxInfo ctx) pkh
 
 
-data Always
-instance ValidatorTypes Always where
-    type instance DatumType Always    = PubKeyHash
-    type instance RedeemerType Always = ()
+data VestingData
+instance ValidatorTypes VestingData where
+    type instance DatumType VestingData    = PubKeyHash
+    type instance RedeemerType VestingData = ()
 
 
-typedValidator :: TypedValidator Always
+typedValidator :: TypedValidator VestingData
 typedValidator = go where
-    go = mkTypedValidator @Always 
+    go = mkTypedValidator @VestingData 
          $$(PlutusTx.compile [|| mkValidator ||])
          $$(PlutusTx.compile [|| wrap ||])
     wrap = mkUntypedValidator
